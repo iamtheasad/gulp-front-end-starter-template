@@ -44,7 +44,9 @@ function htmlTask(){
         .pipe(nunjucksRender({
             path: ['src/views']
         }))
-        .pipe(dest('dist'))
+        .pipe(gulp.dest('dist'))
 }
+
+
 
 exports.default = htmlTask;
