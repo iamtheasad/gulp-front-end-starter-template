@@ -1,4 +1,5 @@
 // Initialize Modules
+const gulp = require('gulp');
 const {src, dest, watch, series, parallel} = require('gulp');
 
 // Importing all gulp files
@@ -39,14 +40,63 @@ const filse = {
 }
 
 
+// Html Task
 function htmlTask(){
     return src(filse.njkPages)
         .pipe(nunjucksRender({
-            path: ['src/views']
+            path: ['src/views/']
         }))
-        .pipe(gulp.dest('dist'))
+        .pipe(dest('dist'));
 }
 
+exports.htmlTask = htmlTask;
 
 
-exports.default = htmlTask;
+// Scss Task
+function scssTask() {
+    return src(filse.scssPath)
+        .pipe(sourcemaps.init())
+        .pipe(sass.sync({outputStyle: 'compressed'}).on('error', sass.logError))
+        .pipe(sourcemaps.write('./maps'))
+        .pipe(dest('dist/assets/css/'));
+}
+
+exports.scssTask = scssTask;
+
+// #########################################################
+// Non Default Tasks =======================================
+// #########################################################
+
+//Image Minify Task
+function imageMinify() {
+    return src(filse.imagePath)
+        .pipe(imagemin(
+            [
+            imagemin.gifsicle({interlaced: true}),
+            imagemin.mozjpeg({quality: 75, progressive: true}),
+            imagemin.optipng({optimizationLevel: 5}),
+            imagemin.svgo({
+                plugins: [
+                    {removeViewBox: true},
+                    {cleanupIDs: false}
+                ]
+            })
+        ]
+        ))
+        .pipe(dest('dist/assets/images/'))
+}
+
+exports.imageMinify = imageMinify;
+
+
+// Clean Dist Folder Task
+function cleanDist() {
+    return src('dist', {read: false})
+        .pipe(clean())
+}
+
+exports.cleanDist = cleanDist;
+
+
+
+
