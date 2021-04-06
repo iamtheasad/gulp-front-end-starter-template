@@ -7,22 +7,23 @@ const clean = require('gulp-clean'); // Remove file
 const browserSync = require('browser-sync').create(); // Automatically reload on browser
 const autoprefixer = require('autoprefixer'); // Browser Support Ad
 const cssnano = require('cssnano'); // Optimize or minifiy css which consume size of css
-const concat = require('gulp-concat'); // Two or more files push on a single file
+const concat = require('gulp-concat'); // Two or more files push on a single file and give them new name
 const postcss = require('gulp-postcss'); // Give editing eligibily to css change while render such as adding autoprefixer
 const replace = require('gulp-replace'); // For rmoving cash files
 const sass = require('gulp-sass'); // Wrap the scss and convert it to the style.css
 const sourcemaps = require('gulp-sourcemaps'); // It shows where is the scss written
-// const uglify = require('gulp-uglify'); // Make js code minify & undreadable
-// const useref = require('gulp-useref'); // Multiple css & js file combine and make new file
+const uglify = require('gulp-uglify'); // Make js code minify
+const terserGulp = require('gulp-terser'); // Make js code minify
+const useref = require('gulp-useref'); // Multiple css & js file combine and make new file
 const imagemin = require('gulp-imagemin'); // Optimize image file size
 const nunjucksRender = require('gulp-nunjucks-render'); // Nunjucks convert to html
 const prettyHtml = require('gulp-pretty-html'); // Decorating Html
-// const gulpif = require('gulp-if'); // This gulp plugin is used when we want to run a task only if certain condition is met
+const gulpif = require('gulp-if'); // This gulp plugin is used when we want to run a task only if certain condition is met
 
 
 // File path variables
 const filse = {
-    htmlPath: 'dist/**/*.+(html|nunjucks|njk)',
+    htmlPath: 'dist/**/*.html',
 
     njkPath: 'src/views/**/*.(html|nunjucks|njk)',
     njkPages: 'src/views/pages/**/*.+(html|nunjucks|njk)',
@@ -42,9 +43,19 @@ const filse = {
 
 // Html Task
 function htmlTask(){
+    const cbString = new Date().getTime();
+
     return src(filse.njkPages)
         .pipe(nunjucksRender({
             path: ['src/views/']
+        }))
+        .pipe(replace(/cb=\d+/g, 'cb=' + cbString))
+        .pipe(prettyHtml({
+            indent_size: 4,
+            indent_char: ' ',
+            unformatted: ['code', 'pre', 'em', 'strong', 'span', 'i', 'b', 'br'],
+            extra_liners: ['head', 'body'],
+            max_preserve_newlines: 1
         }))
         .pipe(dest('dist'));
 }
@@ -54,14 +65,87 @@ exports.htmlTask = htmlTask;
 
 // Scss Task
 function scssTask() {
+    const plugins =[
+        autoprefixer({overrideBrowserslist: ['last 20 version']}),
+        cssnano()
+    ]
     return src(filse.scssPath)
         .pipe(sourcemaps.init())
-        .pipe(sass.sync({outputStyle: 'compressed'}).on('error', sass.logError))
-        .pipe(sourcemaps.write('./maps'))
-        .pipe(dest('dist/assets/css/'));
+        .pipe(sass().on('error', sass.logError))
+        .pipe(postcss(plugins))
+        .pipe(concat('all.min.css'))
+        .pipe(sourcemaps.write('.'))
+        .pipe(dest('dist/assets/css'));
 }
 
 exports.scssTask = scssTask;
+
+
+// Vendor Scss Task
+function vendorScssTask() {
+    const plugins =[
+        autoprefixer({overrideBrowserslist: ['last 20 version']}),
+        cssnano()
+    ]
+    return src(filse.vendorSass)
+        .pipe(sourcemaps.init())
+        .pipe(sass().on('error', sass.logError))
+        .pipe(postcss(plugins))
+        .pipe(concat('vendor-all.min.css'))
+        .pipe(sourcemaps.write('.'))
+        .pipe(dest('dist/assets/css'));
+}
+
+exports.vendorScssTask = vendorScssTask;
+
+
+// Js Task
+function jsTask(){
+    return src(filse.jsPath)
+        .pipe(sourcemaps.init())
+        // .pipe(concat('all.min.js'))
+        .pipe(terserGulp())
+        .pipe(sourcemaps.write('.'))
+        .pipe(dest('dist/assets/js'))
+}
+
+exports.jsTask = jsTask;
+
+
+// Move Vendor Files to Dist For Client
+function vendorMove() {
+    return src(filse.vendorPath)
+        .pipe(dest('dist/assets/vendor'))
+}
+
+exports.vendorMove = vendorMove;
+
+// Move scss Files to Dist for Client
+function scssMove(){
+    return src(filse.scssPath)
+        .pipe(dest('dist/assets/scss'))
+}
+
+exports.scssMove = scssMove;
+
+
+// Image Move Task
+function imageTask() {
+    return src(filse.imagePath)
+        .pipe(dest('dist/assets/images/'))
+}
+
+exports.imageTask = imageTask;
+
+
+// Fonts Move Task
+function fontsTask() {
+    return src(filse.fontPath)
+        .pipe(dest('dist/assets/fonts/'))
+}
+
+exports.fontsTask = fontsTask;
+
 
 // #########################################################
 // Non Default Tasks =======================================
@@ -96,6 +180,15 @@ function cleanDist() {
 }
 
 exports.cleanDist = cleanDist;
+
+
+// Clean Images Task
+function imageClean() {
+    return src('dist/assets/images/', { read: false, allowEmpty: true })
+        .pipe(clean({ force: true }))
+}
+
+exports.imageClean = imageClean;
 
 
 

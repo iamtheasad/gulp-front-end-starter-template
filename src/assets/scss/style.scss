@@ -1,25 +1,25 @@
 // Reset Browser Defaults
-@import "base/normalize";
+@import "bases/normalize";
 
 // Core variables and mixins
-@import "base/variables";
-@import "base/mixins";
-@import "base/functions";
+@import "bases/variables";
+@import "bases/mixins";
+@import "bases/functions";
 
 // Dependencies
-@import "base/typography";
-@import "base/animation";
+@import "bases/typography";
+@import "bases/animation";
 
 // Layouts
-@import "layout/colors";
-@import "layout/grid";
-@import "layout/spacing";
-@import "layout/common";
-@import "layout/preload";
-@import "layout/buttons";
-@import "layout/form";
-@import "layout/sidemenu";
-@import "layout/topbar";
+@import "layouts/colors";
+@import "layouts/grid";
+@import "layouts/spacing";
+@import "layouts/common";
+@import "layouts/preload";
+@import "layouts/buttons";
+@import "layouts/form";
+@import "layouts/sidemenu";
+@import "layouts/topbar";
 
 // Pages
 @import "pages/auth";
