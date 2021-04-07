@@ -4,7 +4,7 @@ const {src, dest, watch, series, parallel} = require('gulp');
 
 // Importing all gulp files
 const clean = require('gulp-clean'); // Remove file
-const browserSync = require('browser-sync').create(); // Automatically reload on browser
+const browserSync = require('browser-sync').create(); // Automatically create server, watch files and reload on browser
 const autoprefixer = require('autoprefixer'); // Browser Support Ad
 const cssnano = require('cssnano'); // Optimize or minifiy css which consume size of css
 const concat = require('gulp-concat'); // Two or more files push on a single file and give them new name
@@ -25,7 +25,7 @@ const gulpif = require('gulp-if'); // This gulp plugin is used when we want to r
 const filse = {
     htmlPath: 'dist/**/*.html',
 
-    njkPath: 'src/views/**/*.(html|nunjucks|njk)',
+    njkPath: 'src/views/**/*.+(html|nunjucks|njk)',
     njkPages: 'src/views/pages/**/*.+(html|nunjucks|njk)',
 
     scssPath: 'src/assets/scss/**/*.scss',
@@ -42,7 +42,7 @@ const filse = {
 
 
 // Html Task
-function htmlTask(){
+function htmlTask() {
     const cbString = new Date().getTime();
 
     return src(filse.njkPages)
@@ -60,30 +60,24 @@ function htmlTask(){
         .pipe(dest('dist'));
 }
 
-exports.htmlTask = htmlTask;
-
-
 // Scss Task
 function scssTask() {
-    const plugins =[
+    const plugins = [
         autoprefixer({overrideBrowserslist: ['last 20 version']}),
         cssnano()
     ]
-    return src(filse.scssPath)
-        .pipe(sourcemaps.init())
+    return src(filse.scssPath, {sourcemaps: true})
+        // .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
         .pipe(postcss(plugins))
-        .pipe(concat('all.min.css'))
-        .pipe(sourcemaps.write('.'))
-        .pipe(dest('dist/assets/css'));
+        .pipe(concat('custom.min.css'))
+        // .pipe(sourcemaps.write('.'))
+        .pipe(dest('dist/assets/css', {sourcemaps: '.'}));
 }
-
-exports.scssTask = scssTask;
-
 
 // Vendor Scss Task
 function vendorScssTask() {
-    const plugins =[
+    const plugins = [
         autoprefixer({overrideBrowserslist: ['last 20 version']}),
         cssnano()
     ]
@@ -91,26 +85,20 @@ function vendorScssTask() {
         .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
         .pipe(postcss(plugins))
-        .pipe(concat('vendor-all.min.css'))
+        .pipe(concat('vendor.min.css'))
         .pipe(sourcemaps.write('.'))
         .pipe(dest('dist/assets/css'));
 }
 
-exports.vendorScssTask = vendorScssTask;
-
-
-// Js Task
-function jsTask(){
-    return src(filse.jsPath)
-        .pipe(sourcemaps.init())
-        // .pipe(concat('all.min.js'))
+// Javascript Task
+function jsTask() {
+    return src(filse.jsPath, {sourcemaps: true})
+        // .pipe(sourcemaps.init())
+        .pipe(concat('custom-script.min.js'))
         .pipe(terserGulp())
-        .pipe(sourcemaps.write('.'))
-        .pipe(dest('dist/assets/js'))
+        // .pipe(sourcemaps.write('.'))
+        .pipe(dest('dist/assets/js', {sourcemaps: '.'}))
 }
-
-exports.jsTask = jsTask;
-
 
 // Move Vendor Files to Dist For Client
 function vendorMove() {
@@ -118,16 +106,11 @@ function vendorMove() {
         .pipe(dest('dist/assets/vendor'))
 }
 
-exports.vendorMove = vendorMove;
-
 // Move scss Files to Dist for Client
-function scssMove(){
+function scssMove() {
     return src(filse.scssPath)
         .pipe(dest('dist/assets/scss'))
 }
-
-exports.scssMove = scssMove;
-
 
 // Image Move Task
 function imageTask() {
@@ -135,16 +118,51 @@ function imageTask() {
         .pipe(dest('dist/assets/images/'))
 }
 
-exports.imageTask = imageTask;
-
-
 // Fonts Move Task
 function fontsTask() {
     return src(filse.fontPath)
         .pipe(dest('dist/assets/fonts/'))
 }
 
-exports.fontsTask = fontsTask;
+// BroweserSync Task : Initialize a server
+function browserSyncServer(done) {
+    browserSync.init({
+        port: '3001',
+        server: {
+            baseDir: './dist'
+        }
+    })
+
+    done();
+}
+
+// BroweserSync Task : Reload the server automatically
+function browserSyncReload(done) {
+    browserSync.reload()
+    done();
+}
+
+// Watch Task
+function watchTask() {
+    watch([filse.scssPath, filse.jsPath, filse.imagePath, filse.njkPath],
+        parallel(scssTask, jsTask, imageTask, htmlTask, browserSyncReload)
+    );
+}
+
+
+// #########################################################
+// Default Tasks =======================================
+// #########################################################
+exports.default = series(
+    vendorScssTask,
+    parallel(scssTask, jsTask, htmlTask, fontsTask),
+    scssMove,
+    vendorMove,
+    imageTask,
+    browserSyncReload,
+    browserSyncServer,
+    watchTask
+)
 
 
 // #########################################################
@@ -156,16 +174,16 @@ function imageMinify() {
     return src(filse.imagePath)
         .pipe(imagemin(
             [
-            imagemin.gifsicle({interlaced: true}),
-            imagemin.mozjpeg({quality: 75, progressive: true}),
-            imagemin.optipng({optimizationLevel: 5}),
-            imagemin.svgo({
-                plugins: [
-                    {removeViewBox: true},
-                    {cleanupIDs: false}
-                ]
-            })
-        ]
+                imagemin.gifsicle({interlaced: true}),
+                imagemin.mozjpeg({quality: 75, progressive: true}),
+                imagemin.optipng({optimizationLevel: 5}),
+                imagemin.svgo({
+                    plugins: [
+                        {removeViewBox: true},
+                        {cleanupIDs: false}
+                    ]
+                })
+            ]
         ))
         .pipe(dest('dist/assets/images/'))
 }
@@ -184,8 +202,8 @@ exports.cleanDist = cleanDist;
 
 // Clean Images Task
 function imageClean() {
-    return src('dist/assets/images/', { read: false, allowEmpty: true })
-        .pipe(clean({ force: true }))
+    return src('dist/assets/images/', {read: false, allowEmpty: true})
+        .pipe(clean({force: true}))
 }
 
 exports.imageClean = imageClean;
