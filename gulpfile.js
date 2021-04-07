@@ -13,7 +13,7 @@ const replace = require('gulp-replace'); // For rmoving cash files
 const sass = require('gulp-sass'); // Wrap the scss and convert it to the style.css
 const sourcemaps = require('gulp-sourcemaps'); // It shows where is the scss written
 const uglify = require('gulp-uglify'); // Make js code minify
-const terserGulp = require('gulp-terser'); // Make js code minify
+const terser = require('gulp-terser'); // Make js code minify
 const useref = require('gulp-useref'); // Multiple css & js file combine and make new file
 const imagemin = require('gulp-imagemin'); // Optimize image file size
 const nunjucksRender = require('gulp-nunjucks-render'); // Nunjucks convert to html
@@ -37,7 +37,7 @@ const filse = {
     distImagePath: 'dist/assets/images/**/*',
 
     vendorPath: 'src/assets/vendor/**/*',
-    vendorSass: 'src/assets/vendor/**/*.scss'
+    vendorSass: 'src/assets/vendor/**/*.scss',
 }
 
 
@@ -81,13 +81,13 @@ function vendorScssTask() {
         autoprefixer({overrideBrowserslist: ['last 20 version']}),
         cssnano()
     ]
-    return src(filse.vendorSass, {sourcemaps: true})
+    return src(filse.vendorSass)
         // .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
         .pipe(postcss(plugins))
         .pipe(concat('vendor.min.css'))
         // .pipe(sourcemaps.write('.'))
-        .pipe(dest('dist/assets/css', {sourcemaps: '.'}));
+        .pipe(dest('dist/assets/css'));
 }
 
 // Javascript Task
@@ -95,7 +95,7 @@ function jsTask() {
     return src(filse.jsPath, {sourcemaps: true})
         // .pipe(sourcemaps.init())
         .pipe(concat('custom-script.min.js'))
-        .pipe(terserGulp())
+        .pipe(terser())
         // .pipe(sourcemaps.write('.'))
         .pipe(dest('dist/assets/js', {sourcemaps: '.'}))
 }

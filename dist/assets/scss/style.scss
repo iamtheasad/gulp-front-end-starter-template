@@ -10,7 +10,7 @@
 @import "bases/typography";
 @import "bases/animation";
 
-// Layouts
+// Layouts 
 @import "layouts/colors";
 @import "layouts/grid";
 @import "layouts/spacing";
@@ -22,5 +22,6 @@
 @import "layouts/topbar";
 
 // Pages
-@import "pages/auth";
 @import "pages/index";
+@import "pages/dataTable";
+@import "pages/reports";
