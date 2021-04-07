@@ -145,7 +145,7 @@ function browserSyncReload(done) {
 // Watch Task
 function watchTask() {
     watch([filse.scssPath, filse.jsPath, filse.imagePath, filse.njkPath, filse.vendorPath],
-        parallel(scssTask, jsTask, imageTask, htmlTask, browserSyncReload)
+        parallel(scssTask, jsTask, imageTask, htmlTask, vendorMove, browserSyncReload)
     );
 }
 
