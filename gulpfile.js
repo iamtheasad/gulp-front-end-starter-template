@@ -81,13 +81,13 @@ function vendorScssTask() {
         autoprefixer({overrideBrowserslist: ['last 20 version']}),
         cssnano()
     ]
-    return src(filse.vendorSass)
-        .pipe(sourcemaps.init())
+    return src(filse.vendorSass, {sourcemaps: true})
+        // .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
         .pipe(postcss(plugins))
         .pipe(concat('vendor.min.css'))
-        .pipe(sourcemaps.write('.'))
-        .pipe(dest('dist/assets/css'));
+        // .pipe(sourcemaps.write('.'))
+        .pipe(dest('dist/assets/css', {sourcemaps: '.'}));
 }
 
 // Javascript Task
