@@ -13,6 +13,7 @@ const replace = require('gulp-replace'); // For rmoving cash files
 const sass = require('gulp-sass'); // Wrap the scss and convert it to the style.css
 const sourcemaps = require('gulp-sourcemaps'); // It shows where is the scss written
 const uglify = require('gulp-uglify'); // Make js code minify
+const babel = require('gulp-babel');
 const terser = require('gulp-terser'); // Make js code minify
 const useref = require('gulp-useref'); // Multiple css & js file combine and make new file
 const imagemin = require('gulp-imagemin'); // Optimize image file size
@@ -95,6 +96,9 @@ function jsTask() {
     return src(filse.jsPath, {sourcemaps: true})
         // .pipe(sourcemaps.init())
         .pipe(concat('custom-script.min.js'))
+        .pipe(babel({
+            presets: ['@babel/env']
+        }))
         .pipe(terser())
         // .pipe(sourcemaps.write('.'))
         .pipe(dest('dist/assets/js', {sourcemaps: '.'}))
