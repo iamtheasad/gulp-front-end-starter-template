@@ -71,7 +71,7 @@ function scssTask() {
         // .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
         .pipe(postcss(plugins))
-        .pipe(concat('custom.min.css'))
+        .pipe(concat('custom-all.min.css'))
         // .pipe(sourcemaps.write('.'))
         .pipe(dest('dist/assets/css', {sourcemaps: '.'}));
 }
@@ -82,23 +82,23 @@ function vendorScssTask() {
         autoprefixer({overrideBrowserslist: ['last 20 version']}),
         cssnano()
     ]
-    return src(filse.vendorSass)
+    return src(filse.vendorSass, {sourcemaps: true})
         // .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
         .pipe(postcss(plugins))
-        .pipe(concat('vendor.min.css'))
+        .pipe(concat('vendor-all.min.css'))
         // .pipe(sourcemaps.write('.'))
-        .pipe(dest('dist/assets/css'));
+        .pipe(dest('dist/assets/css', {sourcemaps: '.'}));
 }
 
 // Javascript Task
 function jsTask() {
     return src(filse.jsPath, {sourcemaps: true})
         // .pipe(sourcemaps.init())
-        .pipe(concat('custom-script.min.js'))
         .pipe(babel({
             presets: ['@babel/env']
         }))
+        .pipe(concat('custom-script-all.min.js'))
         .pipe(terser())
         // .pipe(sourcemaps.write('.'))
         .pipe(dest('dist/assets/js', {sourcemaps: '.'}))
@@ -146,12 +146,20 @@ function browserSyncReload(done) {
     done();
 }
 
+// Combine Task
+function combineTask() {
+    return src(filse.htmlPath, {sourcemaps: true})
+        .pipe(useref({searchPath: './dist'}))
+        .pipe(dest('./dist', {sourcemaps: '.'}))
+}
+
 // Watch Task
 function watchTask() {
     watch([filse.scssPath, filse.jsPath, filse.imagePath, filse.njkPath, filse.vendorPath],
         parallel(scssTask, jsTask, imageTask, htmlTask, vendorMove, browserSyncReload)
     );
 }
+
 
 
 // #########################################################
@@ -165,6 +173,7 @@ exports.default = series(
     imageTask,
     browserSyncReload,
     browserSyncServer,
+    // combineTask,
     watchTask
 )
 
