@@ -23,7 +23,7 @@ const gulpif = require('gulp-if'); // This gulp plugin is used when we want to r
 
 
 // File path variables
-const filse = {
+const files = {
     htmlPath: 'dist/**/*.html',
 
     njkPath: 'src/views/**/*.+(html|nunjucks|njk)',
@@ -46,7 +46,7 @@ const filse = {
 function htmlTask() {
     const cbString = new Date().getTime();
 
-    return src(filse.njkPages)
+    return src(files.njkPages)
         .pipe(nunjucksRender({
             path: ['src/views/']
         }))
@@ -67,11 +67,11 @@ function scssTask() {
         autoprefixer({overrideBrowserslist: ['last 20 version']}),
         cssnano()
     ]
-    return src(filse.scssPath, {sourcemaps: true})
+    return src(files.scssPath, {sourcemaps: true})
         // .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
         .pipe(postcss(plugins))
-        .pipe(concat('custom-all.min.css'))
+        .pipe(concat('custom-style-all.min.css'))
         // .pipe(sourcemaps.write('.'))
         .pipe(dest('dist/assets/css', {sourcemaps: '.'}));
 }
@@ -82,18 +82,18 @@ function vendorScssTask() {
         autoprefixer({overrideBrowserslist: ['last 20 version']}),
         cssnano()
     ]
-    return src(filse.vendorSass, {sourcemaps: true})
+    return src(files.vendorSass, {sourcemaps: true})
         // .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
         .pipe(postcss(plugins))
-        .pipe(concat('vendor-all.min.css'))
+        .pipe(concat('vendor-style-all.css'))
         // .pipe(sourcemaps.write('.'))
         .pipe(dest('dist/assets/css', {sourcemaps: '.'}));
 }
 
 // Javascript Task
 function jsTask() {
-    return src(filse.jsPath, {sourcemaps: true})
+    return src(files.jsPath, {sourcemaps: true})
         // .pipe(sourcemaps.init())
         .pipe(babel({
             presets: ['@babel/env']
@@ -106,25 +106,25 @@ function jsTask() {
 
 // Move Vendor Files to Dist For Client
 function vendorMove() {
-    return src(filse.vendorPath)
+    return src(files.vendorPath)
         .pipe(dest('dist/assets/vendor'))
 }
 
 // Move scss Files to Dist for Client
 function scssMove() {
-    return src(filse.scssPath)
+    return src(files.scssPath)
         .pipe(dest('dist/assets/scss'))
 }
 
 // Image Move Task
 function imageTask() {
-    return src(filse.imagePath)
+    return src(files.imagePath)
         .pipe(dest('dist/assets/images/'))
 }
 
 // Fonts Move Task
 function fontsTask() {
-    return src(filse.fontPath)
+    return src(files.fontPath)
         .pipe(dest('dist/assets/fonts/'))
 }
 
@@ -148,14 +148,14 @@ function browserSyncReload(done) {
 
 // Combine Task
 function combineTask() {
-    return src(filse.htmlPath, {sourcemaps: true})
+    return src(files.htmlPath)
         .pipe(useref({searchPath: './dist'}))
-        .pipe(dest('./dist', {sourcemaps: '.'}))
+        .pipe(dest('./dist'))
 }
 
 // Watch Task
 function watchTask() {
-    watch([filse.scssPath, filse.jsPath, filse.imagePath, filse.njkPath, filse.vendorPath],
+    watch([files.scssPath, files.jsPath, files.imagePath, files.njkPath, files.vendorPath],
         parallel(scssTask, jsTask, imageTask, htmlTask, vendorMove, browserSyncReload)
     );
 }
@@ -171,9 +171,9 @@ exports.default = series(
     scssMove,
     vendorMove,
     imageTask,
+    combineTask,
     browserSyncReload,
     browserSyncServer,
-    // combineTask,
     watchTask
 )
 
@@ -184,7 +184,7 @@ exports.default = series(
 
 //Image Minify Task
 function imageMinify() {
-    return src(filse.imagePath)
+    return src(files.imagePath)
         .pipe(imagemin(
             [
                 imagemin.gifsicle({interlaced: true}),
