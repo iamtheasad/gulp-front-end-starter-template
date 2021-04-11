@@ -71,7 +71,7 @@ function scssTask() {
         // .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
         .pipe(postcss(plugins))
-        .pipe(concat('custom-style-all.min.css'))
+        // .pipe(concat('custom-style-all.min.css'))
         // .pipe(sourcemaps.write('.'))
         .pipe(dest('dist/assets/css', {sourcemaps: '.'}));
 }
@@ -86,7 +86,7 @@ function vendorScssTask() {
         // .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
         .pipe(postcss(plugins))
-        .pipe(concat('vendor-style-all.css'))
+        // .pipe(concat('vendor-style-all.css'))
         // .pipe(sourcemaps.write('.'))
         .pipe(dest('dist/assets/css', {sourcemaps: '.'}));
 }
@@ -98,7 +98,7 @@ function jsTask() {
         .pipe(babel({
             presets: ['@babel/env']
         }))
-        .pipe(concat('custom-script-all.min.js'))
+        // .pipe(concat('custom-script-all.min.js'))
         .pipe(terser())
         // .pipe(sourcemaps.write('.'))
         .pipe(dest('dist/assets/js', {sourcemaps: '.'}))
