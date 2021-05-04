@@ -1,6 +1,6 @@
 // Initialize Modules
 const gulp = require('gulp');
-const {src, dest, watch, series, parallel} = require('gulp');
+const { src, dest, watch, series, parallel } = require('gulp');
 
 // Importing all gulp files
 const clean = require('gulp-clean'); // Remove file
@@ -63,37 +63,38 @@ function htmlTask() {
 
 // Scss Task
 function scssTask() {
+    const autoprefixBrowsers = ['> 1%', 'last 50 versions', 'firefox >= 4', 'safari 7', 'safari 8', 'IE 8', 'IE 9', 'IE 10', 'IE 11'];
     const plugins = [
-        autoprefixer({overrideBrowserslist: ['last 20 version']}),
+        autoprefixer({ overrideBrowserslist: autoprefixBrowsers }),
         cssnano()
     ]
-    return src(files.scssPath, {sourcemaps: true})
+    return src(files.scssPath, { sourcemaps: true })
         // .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
         .pipe(postcss(plugins))
         // .pipe(concat('custom-style-all.min.css'))
         // .pipe(sourcemaps.write('.'))
-        .pipe(dest('dist/assets/css', {sourcemaps: '.'}));
+        .pipe(dest('dist/assets/css', { sourcemaps: '.' }));
 }
 
 // Vendor Scss Task
 function vendorScssTask() {
     const plugins = [
-        autoprefixer({overrideBrowserslist: ['last 20 version']}),
+        autoprefixer({ overrideBrowserslist: ['last 20 version'] }),
         cssnano()
     ]
-    return src(files.vendorSass, {sourcemaps: true})
+    return src(files.vendorSass, { sourcemaps: true })
         // .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
         .pipe(postcss(plugins))
         // .pipe(concat('vendor-style-all.css'))
         // .pipe(sourcemaps.write('.'))
-        .pipe(dest('dist/assets/css', {sourcemaps: '.'}));
+        .pipe(dest('dist/assets/css', { sourcemaps: '.' }));
 }
 
 // Javascript Task
 function jsTask() {
-    return src(files.jsPath, {sourcemaps: true})
+    return src(files.jsPath, { sourcemaps: true })
         // .pipe(sourcemaps.init())
         .pipe(babel({
             presets: ['@babel/env']
@@ -101,7 +102,7 @@ function jsTask() {
         // .pipe(concat('custom-script-all.min.js'))
         .pipe(terser())
         // .pipe(sourcemaps.write('.'))
-        .pipe(dest('dist/assets/js', {sourcemaps: '.'}))
+        .pipe(dest('dist/assets/js', { sourcemaps: '.' }))
 }
 
 // Move Vendor Files to Dist For Client
@@ -149,7 +150,7 @@ function browserSyncReload(done) {
 // Combine Task
 function combineTask() {
     return src(files.htmlPath)
-        .pipe(useref({searchPath: './dist'}))
+        .pipe(useref({ searchPath: './dist' }))
         .pipe(dest('./dist'))
 }
 
@@ -187,13 +188,13 @@ function imageMinify() {
     return src(files.imagePath)
         .pipe(imagemin(
             [
-                imagemin.gifsicle({interlaced: true}),
-                imagemin.mozjpeg({quality: 75, progressive: true}),
-                imagemin.optipng({optimizationLevel: 5}),
+                imagemin.gifsicle({ interlaced: true }),
+                imagemin.mozjpeg({ quality: 75, progressive: true }),
+                imagemin.optipng({ optimizationLevel: 5 }),
                 imagemin.svgo({
                     plugins: [
-                        {removeViewBox: true},
-                        {cleanupIDs: false}
+                        { removeViewBox: true },
+                        { cleanupIDs: false }
                     ]
                 })
             ]
@@ -206,7 +207,7 @@ exports.imageMinify = imageMinify;
 
 // Clean Dist Folder Task
 function cleanDist() {
-    return src('dist', {read: false})
+    return src('dist', { read: false })
         .pipe(clean())
 }
 
@@ -215,12 +216,8 @@ exports.cleanDist = cleanDist;
 
 // Clean Images Task
 function imageClean() {
-    return src('dist/assets/images/', {read: false, allowEmpty: true})
-        .pipe(clean({force: true}))
+    return src('dist/assets/images/', { read: false, allowEmpty: true })
+        .pipe(clean({ force: true }))
 }
 
 exports.imageClean = imageClean;
-
-
-
-
