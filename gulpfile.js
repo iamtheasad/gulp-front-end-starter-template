@@ -24,7 +24,7 @@ const gulpif = require('gulp-if'); // This gulp plugin is used when we want to r
 
 // File path variables
 const files = {
-    htmlPath: 'dist/**/*.html',
+    htmlPath: 'build/**/*.html',
 
     njkPath: 'src/views/**/*.+(html|nunjucks|njk)',
     njkPages: 'src/views/pages/**/*.+(html|nunjucks|njk)',
@@ -35,7 +35,7 @@ const files = {
     fontPath: 'src/assets/fonts/**/*.{eot,svg,ttf,woff,woff2}',
 
     imagePath: 'src/assets/images/**/*',
-    distImagePath: 'dist/assets/images/**/*',
+    buildImagePath: 'build/assets/images/**/*',
 
     vendorPath: 'src/assets/vendor/**/*',
     vendorSass: 'src/assets/vendor/**/*.scss',
@@ -58,7 +58,7 @@ function htmlTask() {
             extra_liners: ['head', 'body'],
             max_preserve_newlines: 1
         }))
-        .pipe(dest('dist'));
+        .pipe(dest('build'));
 }
 
 // Scss Task
@@ -74,7 +74,7 @@ function scssTask() {
         .pipe(postcss(plugins))
         // .pipe(concat('custom-style-all.min.css'))
         // .pipe(sourcemaps.write('.'))
-        .pipe(dest('dist/assets/css', { sourcemaps: '.' }));
+        .pipe(dest('build/assets/css', { sourcemaps: '.' }));
 }
 
 // Vendor Scss Task
@@ -89,7 +89,7 @@ function vendorScssTask() {
         .pipe(postcss(plugins))
         // .pipe(concat('vendor-style-all.css'))
         // .pipe(sourcemaps.write('.'))
-        .pipe(dest('dist/assets/css', { sourcemaps: '.' }));
+        .pipe(dest('build/assets/css', { sourcemaps: '.' }));
 }
 
 // Javascript Task
@@ -102,31 +102,31 @@ function jsTask() {
         // .pipe(concat('custom-script-all.min.js'))
         .pipe(terser())
         // .pipe(sourcemaps.write('.'))
-        .pipe(dest('dist/assets/js', { sourcemaps: '.' }))
+        .pipe(dest('build/assets/js', { sourcemaps: '.' }))
 }
 
-// Move Vendor Files to Dist For Client
+// Move Vendor Files to build For Client
 function vendorMove() {
     return src(files.vendorPath)
-        .pipe(dest('dist/assets/vendor'))
+        .pipe(dest('build/assets/vendor'))
 }
 
-// Move scss Files to Dist for Client
+// Move scss Files to build for Client
 function scssMove() {
     return src(files.scssPath)
-        .pipe(dest('dist/assets/scss'))
+        .pipe(dest('build/assets/scss'))
 }
 
 // Image Move Task
 function imageTask() {
     return src(files.imagePath)
-        .pipe(dest('dist/assets/images/'))
+        .pipe(dest('build/assets/images/'))
 }
 
 // Fonts Move Task
 function fontsTask() {
     return src(files.fontPath)
-        .pipe(dest('dist/assets/fonts/'))
+        .pipe(dest('build/assets/fonts/'))
 }
 
 // BroweserSync Task : Initialize a server
@@ -134,7 +134,7 @@ function browserSyncServer(done) {
     browserSync.init({
         port: '3001',
         server: {
-            baseDir: './dist'
+            baseDir: './build'
         }
     })
 
@@ -150,8 +150,8 @@ function browserSyncReload(done) {
 // Combine Task
 function combineTask() {
     return src(files.htmlPath)
-        .pipe(useref({ searchPath: './dist' }))
-        .pipe(dest('./dist'))
+        .pipe(useref({ searchPath: './build' }))
+        .pipe(dest('./build'))
 }
 
 // Watch Task
@@ -199,24 +199,24 @@ function imageMinify() {
                 })
             ]
         ))
-        .pipe(dest('dist/assets/images/'))
+        .pipe(dest('build/assets/images/'))
 }
 
 exports.imageMinify = imageMinify;
 
 
-// Clean Dist Folder Task
-function cleanDist() {
-    return src('dist', { read: false })
+// Clean build Folder Task
+function cleanBuild() {
+    return src('build', { read: false })
         .pipe(clean())
 }
 
-exports.cleanDist = cleanDist;
+exports.cleanBuild = cleanBuild;
 
 
 // Clean Images Task
 function imageClean() {
-    return src('dist/assets/images/', { read: false, allowEmpty: true })
+    return src('build/assets/images/', { read: false, allowEmpty: true })
         .pipe(clean({ force: true }))
 }
 
