@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // @function rem($pixels, $context: $baseFontSize) {
 //   @if (unitless($pixels)) {
 //     $pixels: $pixels * 1px;
@@ -7,3 +8,14 @@
 //   }
 //   @return $pixels/$context * 1rem;
 // }
+=======
+@function rem($pixels, $context: $baseFontSize) {
+    @if (unitless($pixels)){
+       $pixels: $pixels * 1px;
+   }
+   @if (unitless($context)) {
+       $context: $context * 1px;
+   }
+   @return $pixels / $context * 1rem;
+}
+>>>>>>> cb9e183bd93bb5c1d519d22a5d2716a856ef06e9
