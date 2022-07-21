@@ -5,12 +5,12 @@
 @import "abstracts/mixins";
 
 // Base SCSS
-@import "base/base";
-@import "base/typography";
-@import "base/utilities";
-@import "base/animations";
-@import "base/spacing";
-@import "base/colors";
+@import "bases/base";
+@import "bases/typography";
+@import "bases/utilities";
+@import "bases/animation";
+@import "bases/spacing";
+@import "bases/colors";
 
 // Component SCSS
 @import "components/button";
@@ -22,7 +22,6 @@
 @import "layouts/grid";
 @import "layouts/header";
 @import "layouts/topbar";
-@import "layouts/navigation";
 @import "layouts/preload";
 @import "layouts/sidemenu";
 

@@ -23,7 +23,7 @@ const gulpif = require("gulp-if"); // This gulp plugin is used when we want to r
 
 // File path variables
 const files = {
-  htmlPath: "build/**/*.html",
+  htmlPath: "dist/**/*.html",
 
   njkPath: "src/views/**/*.+(html|nunjucks|njk)",
   njkPages: "src/views/pages/**/*.+(html|nunjucks|njk)",
@@ -34,7 +34,7 @@ const files = {
   fontPath: "src/assets/fonts/**/*.{eot,svg,ttf,woff,woff2}",
 
   imagePath: "src/assets/images/**/*",
-  buildImagePath: "build/assets/images/**/*",
+  distImagePath: "dist/assets/images/**/*",
 
   vendorPath: "src/assets/vendor/**/*",
   vendorSass: "src/assets/vendor/**/*.scss",
@@ -60,7 +60,7 @@ function htmlTask() {
         max_preserve_newlines: 1,
       })
     )
-    .pipe(dest("build"));
+    .pipe(dest("dist"));
 }
 
 // Scss Task
@@ -87,7 +87,7 @@ function scssTask() {
       .pipe(postcss(plugins))
       // .pipe(concat('custom-style-all.min.css'))
       // .pipe(sourcemaps.write('.'))
-      .pipe(dest("build/assets/css", { sourcemaps: "." }))
+      .pipe(dest("dist/assets/css", { sourcemaps: "." }))
   );
 }
 
@@ -104,7 +104,7 @@ function vendorScssTask() {
       .pipe(postcss(plugins))
       // .pipe(concat('vendor-style-all.css'))
       // .pipe(sourcemaps.write('.'))
-      .pipe(dest("build/assets/css", { sourcemaps: "." }))
+      .pipe(dest("dist/assets/css", { sourcemaps: "." }))
   );
 }
 
@@ -121,28 +121,28 @@ function jsTask() {
       // .pipe(concat('custom-script-all.min.js'))
       .pipe(terser())
       // .pipe(sourcemaps.write('.'))
-      .pipe(dest("build/assets/js", { sourcemaps: "." }))
+      .pipe(dest("dist/assets/js", { sourcemaps: "." }))
   );
 }
 
-// Move Vendor Files to build For Client
+// Move Vendor Files to dist For Client
 function vendorMove() {
-  return src(files.vendorPath).pipe(dest("build/assets/vendor"));
+  return src(files.vendorPath).pipe(dest("dist/assets/vendor"));
 }
 
-// Move scss Files to build for Client
+// Move scss Files to dist for Client
 function scssMove() {
-  return src(files.scssPath).pipe(dest("build/assets/scss"));
+  return src(files.scssPath).pipe(dest("dist/assets/scss"));
 }
 
 // Image Move Task
 function imageTask() {
-  return src(files.imagePath).pipe(dest("build/assets/images/"));
+  return src(files.imagePath).pipe(dest("dist/assets/images/"));
 }
 
 // Fonts Move Task
 function fontsTask() {
-  return src(files.fontPath).pipe(dest("build/assets/fonts/"));
+  return src(files.fontPath).pipe(dest("dist/assets/fonts/"));
 }
 
 // BroweserSync Task : Initialize a server
@@ -150,7 +150,7 @@ function browserSyncServer(done) {
   browserSync.init({
     port: "3001",
     server: {
-      baseDir: "./build",
+      baseDir: "./dist",
     },
   });
 
@@ -166,8 +166,8 @@ function browserSyncReload(done) {
 // Combine Task
 function combineTask() {
   return src(files.htmlPath)
-    .pipe(useref({ searchPath: "./build" }))
-    .pipe(dest("./build"));
+    .pipe(useref({ searchPath: "./dist" }))
+    .pipe(dest("./dist"));
 }
 
 // Watch Task
@@ -223,21 +223,21 @@ function imageMinify() {
         }),
       ])
     )
-    .pipe(dest("build/assets/images/"));
+    .pipe(dest("dist/assets/images/"));
 }
 
 exports.imageMinify = imageMinify;
 
-// Clean build Folder Task
-function cleanBuild() {
-  return src("build", { read: false }).pipe(clean());
+// Clean dist Folder Task
+function cleanDist() {
+  return src("dist", { read: false }).pipe(clean());
 }
 
-exports.cleanBuild = cleanBuild;
+exports.cleanDist = cleanDist;
 
 // Clean Images Task
 function imageClean() {
-  return src("build/assets/images/", { read: false, allowEmpty: true }).pipe(
+  return src("dist/assets/images/", { read: false, allowEmpty: true }).pipe(
     clean({ force: true })
   );
 }
