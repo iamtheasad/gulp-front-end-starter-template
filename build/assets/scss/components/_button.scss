@@ -1,0 +1,55 @@
+.bt-btn {
+  background-color: var(--color-primary) !important;
+  font-size: 1.3rem;
+  color: var(--color-white) !important;
+  border: none;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+  padding: 0.8rem 2.1rem;
+  text-decoration: none;
+  transition: 0.2s;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &:focus,
+  &:active,
+  &:focus-visible {
+    outline: none;
+    box-shadow: none !important;
+    border: none;
+  }
+
+  &.h-34 {
+    height: 3.4rem;
+  }
+
+  &.h-48 {
+    height: 4.8rem;
+  }
+
+  &.h-58 {
+    height: 5.8rem;
+  }
+
+  &.btn-primary {
+    padding: 1.2rem 2.4rem;
+    font-weight: 600;
+    font-size: 1.6rem;
+  }
+
+  &.p-12x16 {
+    padding: 1.2rem 1.6rem;
+  }
+
+  &.btn-secondary {
+    background-color: var(--color-white) !important;
+    color: var(--color-primary) !important;
+    font-weight: 600;
+    font-size: 1.8rem;
+    padding: 1.6rem 3.2rem;
+  }
+}

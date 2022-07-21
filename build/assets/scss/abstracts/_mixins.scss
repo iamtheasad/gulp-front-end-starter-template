@@ -1,0 +1,68 @@
+/* 
+- Media queries should use em unite instead of rem or px
+- Bootstrap breakpoint added
+- 1em = 16px
+- 479px x 16 = 29.94em -> smallest
+- 500px x 16 = 31.25em -> smaller
+- 575px x 16 = 35.94em -> small
+- 767px x 16 = 47.94em -> medium
+- 991px x 16 = 61.94em -> large
+- 1199px x 16 = 74.94em -> extraLarge
+- 1399px x 16 = 87.44em -> extraExtraLarge
+*/
+
+@mixin mediaQueries($breakpoint) {
+  @if $breakpoint == smallest {
+    @media screen and(max-width: 29.94em) {
+      @content;
+    }
+  }
+
+  @if $breakpoint == smaller {
+    @media screen and(max-width: 31.25em) {
+      @content;
+    }
+  }
+
+  @if $breakpoint == small {
+    @media screen and (max-width: 35.94em) {
+      @content;
+    }
+  }
+
+  @if ($breakpoint == medium) {
+    @media screen and (max-width: 47.94em) {
+      @content;
+    }
+  }
+
+  @if ($breakpoint == mediumMin) {
+    @media screen and (min-width: 47.94em) {
+      @content;
+    }
+  }
+
+  @if $breakpoint == large {
+    @media screen and (max-width: 61.94em) {
+      @content;
+    }
+  }
+
+  @if $breakpoint == largeMin {
+    @media screen and(min-width: 61.94em) {
+      @content;
+    }
+  }
+
+  @if $breakpoint == extraLarge {
+    @media screen and(max-width: 74.94em) {
+      @content;
+    }
+  }
+
+  @if $breakpoint == extraExtraLarge {
+    @media screen and (max-width: 87.44em) {
+      @content;
+    }
+  }
+}

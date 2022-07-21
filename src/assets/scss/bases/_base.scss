@@ -1,0 +1,47 @@
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html {
+  font-size: 62.5%; // 1rem = 16px: 10px/16px = 62.5%
+
+  @include mediaQueries(large) {
+    font-size: 55%;
+  }
+
+  @include mediaQueries(medium) {
+    font-size: 52%;
+  }
+}
+
+body {
+  font-size: 1.6rem;
+  line-height: 2.4rem;
+  box-sizing: border-box;
+  font-family: var(--font-family);
+}
+
+p {
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: #000;
+  text-decoration: none;
+  &:hover {
+    color: unset;
+  }
+}
+
+img {
+  width: 100%;
+}

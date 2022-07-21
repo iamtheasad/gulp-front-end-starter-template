@@ -1,27 +1,32 @@
-// Reset Browser Defaults
-@import "bases/normalize";
+// Abstract SCSS
+@import "abstracts/my-root";
+@import "abstracts/variables";
+@import "abstracts/functions";
+@import "abstracts/mixins";
 
-// Core variables and mixins
-@import "bases/variables";
-@import "bases/mixins";
-@import "bases/functions";
+// Base SCSS
+@import "base/base";
+@import "base/typography";
+@import "base/utilities";
+@import "base/animations";
+@import "base/spacing";
+@import "base/colors";
 
-// Dependencies
-@import "bases/typography";
-@import "bases/animation";
+// Component SCSS
+@import "components/button";
+@import "components/form";
+@import "components/footer";
+@import "components/scrollbar";
 
-// Layouts 
-@import "layouts/colors";
+// Layouts SCSS
 @import "layouts/grid";
-@import "layouts/spacing";
-@import "layouts/common";
-@import "layouts/preload";
-@import "layouts/buttons";
-@import "layouts/form";
 @import "layouts/header";
-@import "layouts/footer";
+@import "layouts/topbar";
+@import "layouts/navigation";
+@import "layouts/preload";
+@import "layouts/sidemenu";
 
-// Pages
+// Page SCSS
 @import "pages/auth";
-@import "pages/dataTable";
 @import "pages/index";
+@import "pages/dataTable";

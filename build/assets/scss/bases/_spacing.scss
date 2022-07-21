@@ -1,0 +1,43 @@
+.custom-container {
+  max-width: 111rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.container-padding {
+  padding: 10.12rem 0px;
+
+  @include mediaQueries(medium) {
+    flex-direction: column;
+    padding: 5rem 0rem;
+  }
+}
+
+.container-padding-2 {
+  padding: 6rem 0px;
+
+  @include mediaQueries(medium) {
+    flex-direction: column;
+    padding: 5rem 0rem;
+  }
+}
+
+.c-mt-6 {
+  margin-top: 6px;
+}
+
+.c-mr-6 {
+  margin-right: 6px;
+}
+
+.c-mb-6 {
+  margin-bottom: 6px;
+}
+
+.c-ml-6 {
+  margin-left: 6px;
+}
+
+.mt-24 {
+  margin-top: 2.4rem;
+}
