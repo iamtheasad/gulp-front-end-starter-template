@@ -24,16 +24,16 @@ For Run The Project On Your Local Machine:
 gulp
 ```
 
-For Clean Build Folder Run:
+For Clean build / dist Folder Run:
 
 ```
-yarn cleanBuild
+yarn cleanDist
 ```
 
 or
 
 ```
-npm run cleanBuild
+npm run cleanDist
 ```
 
 For Image Optimized Run:

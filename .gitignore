@@ -1,6 +1,5 @@
 node_modules/
 .idea
-.vscode
 debug.log
 
 # Build and Release Folders
